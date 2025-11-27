@@ -1,79 +1,129 @@
-Simple Java Calculator Project
+Advanced Java Calculator (Console + GUI)
 
-Hey! This is the documentation for a simple calculator I built in Java. It's got two modes: a basic command line version and a cooler graphical one using Swing.
+Problem Statement
 
+Many users need a single calculator application that works both in a simple command-line environment and with a modern graphical interface, while still supporting more than just basic one-step operations. This project provides a Java-based calculator that can run in the terminal or as a Swing GUI, and can evaluate complete arithmetic expressions with brackets, operator precedence, percentages, and error handling.
 
-Features I Included
-This project is split up into a few parts to keep things clean:
+Project Overview
+This project is an advanced calculator written in Java with two modes:
+Console mode: A menu-driven command-line calculator.
+GUI mode: A dark-themed calculator with rounded buttons, built using Java Swing.
+The core arithmetic logic is shared between both modes through a common Calculator class to keep the design modular and easy to maintain.
+Features
+Basic operations: addition, subtraction, multiplication, division.
+Two interfaces:
+Command Line Interface (CLI) via CalculatorApp.
+Graphical User Interface (GUI) via CalculatorGUI.
+Expression evaluation in GUI:
+Operator precedence (× and ÷ before + and −).
+Nested parentheses: (2+3)*4, 2(3+4), etc.
+Percentage handling: 50% treated as 50/100.
+Unary minus for negative numbers: -5+10, 10*-2.
+Robust error handling:
+Division by zero detection.
+Invalid number format.
+Mismatched parentheses or malformed expressions.
+Modern UI:
+Dark theme.
+Custom circular buttons (RoundButton).
+Clear (AC) and Backspace (⌫) controls.
 
-Calculator.java (The Math Engine): This is the core logic that handles the four main operations (+, -, *, /) using float for the numbers.
+├── Calculator.java        # Core arithmetic logic (add, subtract, multiply, divide)
+├── CalculatorApp.java     # Console interface + main entry for CLI/GUI switch
+├── CalculatorGUI.java     # Swing GUI, expression parser, custom buttons
+├── README.md              # Project documentation
+├── Calculator_Project_Report.*   # Project report (md/pdf/docx as required)
+└── screenshots/
+    ├── console_menu.png
+    ├── console_result.png
+    ├── gui_main_window.png
+    ├── gui_complex_expression.png
+    └── gui_error_dialog.png
 
-Command Line Interface (CLI): Handled by CalculatorApp.java.
+How to Run the Project
+Prerequisites
+Java JDK 8 or newer.
 
-It gives you a text-based menu when you run it.
+Any editor/IDE (VS Code, IntelliJ IDEA, Eclipse) or plain terminal.
 
-I added input validation to make sure you can only enter valid numbers or menu choices.
+Compilation
+From the project root folder, run:
+javac Calculator.java CalculatorApp.java CalculatorGUI.java
 
-It also handles the classic "Division by Zero" error so the program doesn't crash!
+This will generate .class files for all three Java source files.
 
-Graphical User Interface (GUI): This is CalculatorGUI.java (plus a cool custom button class).
-
-It has a dark, modern design using Java Swing.
-
-Screenshots
-Here are some screenshots of the GUI in action:
-
-MMain window upon launch (![alt text](image-2.png))
-
-Example calculation with result (![alt text](image-3.png))
-
-Error handling (invalid input) dialog (![alt text](image-4.png))
-
-
- How to Get It Running
-You need to have Java installed (JDK 8 or newer) to compile and run this.
-
-1. File Setup
-The whole program is in the code block above, but for Java to compile it right, you should save the code into three separate files:
-
-Calculator.java: For the basic add, subtract, etc. methods.
-
-CalculatorApp.java: The main class that runs the CLI version.
-
-CalculatorGUI.java: The class for the graphical window and the RoundButton logic.
-
-2. Compile Everything
-Open your terminal or command prompt in the directory where you saved the files and run this command:
-
-Bash
-
-javac *.java
-3. Run the App!
-You've got two choices now:
-
-A. Run the CLI (Command Line)
-This is the default text-based version.
-
-Bash
-
+Option 1: Run Console Mode (CLI)
 java CalculatorApp
-B. Run the GUI (Graphical Interface)
-To see the cool dark-themed calculator, you have to pass the gui argument:
+You will see a text-based menu:
 
-Bash
+Choose an operation (1–4).
 
+Enter two numbers.
+
+Get the result with two decimal places.
+
+Division by zero and invalid inputs are handled gracefully.
+
+Option 2: Run GUI Mode
+You can start the GUI in either of these ways:
+
+Using the main method in CalculatorGUI:
+
+Using the CLI launcher with an argument:
 java CalculatorApp gui
- Code Breakdown
-Here’s a quick overview of what each main file/class does:
 
-Calculator.java: Just four simple methods to handle addition, subtraction, multiplication, and division. It uses float for decimal numbers.
+The GUI window will open with:
+Number and operator buttons.
 
-CalculatorApp.java: This contains the main method that decides which interface to launch. It also has helper functions like getValidChoice and getValidFloat to make sure the user enters sane input in the console.
+AC to clear all input.
+⌫ to delete the last character.
+() for parentheses.
+% for percentages.
+= to evaluate the entire expression shown in the display.
 
-CalculatorGUI.java:
+Class Descriptions
+1. Calculator.java (Core Math Engine)
+Holds the four main operations using float:
+add(float a, float b)
+subtract(float a, float b)
+multiply(float a, float b)
+divide(float a, float b) with an ArithmeticException if b == 0.
+Used by both the console and GUI modes to avoid duplication of logic.
+2. CalculatorApp.java (Console Interface + Launcher)
+Contains the main(String[] args) method.
 
-initComponents(): Sets up the look and feel, colors, and button grid.
+If run with gui argument, launches the Swing calculator.
+Otherwise, runs the CLI calculator:
+Displays a menu of operations.
+Uses Scanner to read user input.
+Validates menu choices and numeric input (getValidChoice, getValidFloat).
+Catches and displays division-by-zero errors.
+Waits for user to press Enter before returning to the menu.
+3. CalculatorGUI.java (Swing GUI + Expression Engine)
+Extends JFrame and builds a dark-themed calculator UI.
 
-evaluateExpression(String expr): This is the heavy lifting! It tokenizes the expression and uses two stacks to solve the equation in the correct order.
+Uses:
+JLabel for the display.
+JPanel with GridLayout for the button grid.
+Custom RoundButton class for circular buttons.
 
-RoundButton: A little piece of custom Swing code to draw circular buttons instead of the default square ones.
+Maintains an input buffer (StringBuilder buffer) representing the current expression.
+Handles button clicks via ActionListener:
+Digits and . are appended to the buffer.
+Operators, parentheses, AC, and backspace have context-aware actions.
+evaluateBuffer():
+Translates symbols (×, ÷, −, %) into standard operators.
+Calls evaluateExpression(String expr) to compute the result.
+
+evaluateExpression():
+Tokenizes the string (tokenize method).
+Uses two stacks (values and operators) to evaluate with correct precedence.
+Supports unary minus, nested parentheses, and percent.
+
+4. RoundButton (Custom Swing Component)
+Extends JButton.
+Overrides paintComponent to draw a filled circle with anti-aliased edges.
+Overrides contains for correct circular hit detection.
+Overrides getPreferredSize to keep buttons consistent in size.
+Overrides getPreferredSize to keep buttons consistent in size.
+
